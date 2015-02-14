@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import json
+import subprocess
+import base64   
 
 class Misc:
 
@@ -16,3 +18,8 @@ class Misc:
     @staticmethod
     def run_dos_command():
         pass
+
+    @staticmethod
+    def get_decode_string(string):
+        return base64.b64decode(string)
+

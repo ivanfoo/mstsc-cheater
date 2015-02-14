@@ -11,8 +11,10 @@ class RemoteWindoswsManager:
         self.datadir = os.path.dirname(__file__) + '/data/'
 
     def get_connect_data(self, host):
-        filename = self.datadir + host + '.json'
-        return Misc.load_json(filename)
+        filename = self.datadir + host + '.json'        
+        data = Misc.load_json(filename)
+        data['passw'] = Misc.get_decode_string(data['passw'])
+        return data
 
     def set_cmd_keys(self):
         #some dos stuff
