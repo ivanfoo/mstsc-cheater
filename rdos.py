@@ -4,7 +4,7 @@ import os
 import sys
 from misc import Misc
 
-class RemoteTerm:
+class RemoteWindoswsManager:
 
     def __init__(self, targets = sys.argv[1:]):
         self.targets = targets
@@ -22,12 +22,16 @@ class RemoteTerm:
         #some dos stuff
         pass
 
-    def run(self):
-        for target in self.targets :
-            data = self.get_connect_data(target)
-            self.set_cmd_keys()
-            self.open_remote_term()
+    def runTarget(self, target):
+        data = self.get_connect_data(target)
+        self.set_cmd_keys()
+        self.open_remote_term()
 
-rterm = RemoteTerm()
+    def run(self):
+        for target in self.targets:
+            self.runTarget(target)
+
+rdos = RemoteWindoswsManager()
+
 print 'Running rdos...'
-rterm.run()
+rdos.run()
