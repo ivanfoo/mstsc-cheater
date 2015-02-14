@@ -1,6 +1,6 @@
 {  
     "host": "xxx.xxx.xxx.xxx",
     "user": "username",
-    "passw": "password",
+    "passw": "base64passw",
     "rdpFile": "filename.rdp"
 }
