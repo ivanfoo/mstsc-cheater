@@ -2,7 +2,8 @@
 
 import os
 import sys
-from misc import Misc
+from helper import Helper
+import subprocess
 
 class RemoteWindoswsManager:
 
@@ -11,27 +12,33 @@ class RemoteWindoswsManager:
         self.datadir = os.path.dirname(__file__) + '/data/'
 
     def get_connect_data(self, host):
-        filename = self.datadir + host + '.json'        
-        data = Misc.load_json(filename)
-        data['passw'] = Misc.get_decode_string(data['passw'])
+        filename = self.datadir + host + '.json'    
+        data = Helper.load_json(filename)
         return data
 
-    def set_cmd_keys(self):
-        #some dos stuff
-        pass
+    def set_cmd_keys(self, data):
+        host = "/generic:TERMSRV/" + data['host']
+        user = "/user:" + data['user']
+        passw = "/pass:" + Helper.get_decode_string(data['passw'])
 
-    def open_remote_term(self):
-        #some dos stuff
-        pass
+        subprocess.call(['cmdkey', host, user, passw])
+        return
 
-    def runTarget(self, target):
+    def open_remote_term(self, data):
+        host = '/v:' + data['host']
+        rdp = self.datadir + os.sep + data['rdp_file']
+        subprocess.Popen(['mstsc', rdp, '/admin', host])
+        return
+
+    def run_target(self, target):
         data = self.get_connect_data(target)
-        self.set_cmd_keys()
-        self.open_remote_term()
+        self.set_cmd_keys(data)
+        self.open_remote_term(data)
+        return
 
     def run(self):
         for target in self.targets:
-            self.runTarget(target)
+            self.run_target(target)
 
 rdos = RemoteWindoswsManager()
 
