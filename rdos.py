@@ -8,19 +8,18 @@ import subprocess
 class RemoteWindoswsManager:
 
     def __init__(self, targets = sys.argv[1:]):
-        self.targets = targets
+        self.targets = Helper.items_to_lower(targets)
         self.datadir = os.path.dirname(__file__) + '/data/'
 
-    def get_connect_data(self, host):
-        filename = self.datadir + host + '.json'    
+    def get_connect_data(self, target):
+        filename = self.datadir + target + '.json'    
         data = Helper.load_json(filename)
         return data
 
     def set_cmd_keys(self, data):
         host = "/generic:TERMSRV/" + data['host']
         user = "/user:" + data['user']
-        passw = "/pass:" + Helper.get_decode_string(data['passw'])
-
+        passw = "/pass:" + Helper.decode_string(data['passw'])
         subprocess.call(['cmdkey', host, user, passw])
         return
 
