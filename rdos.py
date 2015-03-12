@@ -24,25 +24,21 @@ class RemoteWindowsManager:
         user = "/user:" + self.data['user']
         passw = "/pass:" + base64.b64decode(self.data['passw'])
         s.Popen(['cmdkey', host, user, passw], stdout=s.PIPE).wait()
-        return
 
     def del_cmdkeys(self):
         host = "/delete:TERMSRV/" + self.data['host']
         s.Popen(['cmdkey', host], stdout=s.PIPE).wait()
-        return
 
     def open_remote_term(self):
         host = '/v:' + self.data['host']
         rdp = self.datadir + self.data['rdp_file']
         s.Popen(['mstsc', rdp, '/admin', host]).wait()
-        return
 
     def run(self):
         self.data = self.get_connect_data()
         self.set_cmdkeys()
         self.open_remote_term()
         self.del_cmdkeys()
-        return
 
 def main(target, datadir):
     rdos = RemoteWindowsManager(target, datadir)
@@ -53,4 +49,3 @@ if __name__ == '__main__':
     datadir = os.path.dirname(__file__) + '/data/'
     target = sys.argv[1]
     main(target, datadir)
-    return
