@@ -1,45 +1,56 @@
 #! /usr/bin/env python
 
+import base64
+import json
 import os
+import subprocess as s
 import sys
-from helper import Helper
-import subprocess
 
-class RemoteWindoswsManager:
+class RemoteWindowsManager:
 
-    def __init__(self, targets = sys.argv[1:]):
-        self.targets = Helper.items_to_lower(targets)
-        self.datadir = os.path.dirname(__file__) + '/data/'
+    def __init__(self, target, datadir):
+        self.target = target
+        self.datadir = datadir
+        self.data = []
 
-    def get_connect_data(self, target):
-        filename = self.datadir + target + '.json'    
-        data = Helper.load_json(filename)
+    def get_connect_data(self):
+        filename = self.datadir + self.target + '.json'
+        with open(filename, 'r') as f:
+            data = json.load(f)
         return data
 
-    def set_cmd_keys(self, data):
-        host = "/generic:TERMSRV/" + data['host']
-        user = "/user:" + data['user']
-        passw = "/pass:" + Helper.decode_string(data['passw'])
-        subprocess.call(['cmdkey', host, user, passw])
+    def set_cmdkeys(self):
+        host = "/generic:TERMSRV/" + self.data['host']
+        user = "/user:" + self.data['user']
+        passw = "/pass:" + base64.b64decode(self.data['passw'])
+        s.Popen(['cmdkey', host, user, passw], stdout=s.PIPE).wait()
         return
 
-    def open_remote_term(self, data):
-        host = '/v:' + data['host']
-        rdp = self.datadir + os.sep + data['rdp_file']
-        subprocess.Popen(['mstsc', rdp, '/admin', host])
+    def del_cmdkeys(self):
+        host = "/delete:TERMSRV/" + self.data['host']
+        s.Popen(['cmdkey', host], stdout=s.PIPE).wait()
         return
 
-    def run_target(self, target):
-        data = self.get_connect_data(target)
-        self.set_cmd_keys(data)
-        self.open_remote_term(data)
+    def open_remote_term(self):
+        host = '/v:' + self.data['host']
+        rdp = self.datadir + self.data['rdp_file']
+        s.Popen(['mstsc', rdp, '/admin', host]).wait()
         return
 
     def run(self):
-        for target in self.targets:
-            self.run_target(target)
+        self.data = self.get_connect_data()
+        self.set_cmdkeys()
+        self.open_remote_term()
+        self.del_cmdkeys()
+        return
 
-rdos = RemoteWindoswsManager()
+def main(target, datadir):
+    rdos = RemoteWindowsManager(target, datadir)
+    rdos.run()
 
-print 'Running rdos...'
-rdos.run()
+if __name__ == '__main__':
+    print 'Running rdos...'
+    datadir = os.path.dirname(__file__) + '/data/'
+    target = sys.argv[1]
+    main(target, datadir)
+    return
