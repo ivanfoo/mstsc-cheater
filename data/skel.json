@@ -1,5 +1,5 @@
 {  
-    "host": "xxx.xxx.xxx.xxx",
+    "host": "hostname",
     "user": "username",
     "passw": "base64passw"
 }
