@@ -35,14 +35,10 @@ class RemoteWindowsManager:
 
         s.Popen(['cmdkey', host, user, passw], stdout=s.PIPE).wait()
 
-        return
-
     def del_cmdkeys(self):
         host = "/delete:TERMSRV/" + self.data['host']
 
         s.Popen(['cmdkey', host], stdout=s.PIPE).wait()
-
-        return
 
     def open_remote_desktop(self):
         host = '/v:' + self.data['host'] + ':' + self.data['port']
@@ -50,21 +46,15 @@ class RemoteWindowsManager:
 
         s.Popen(['mstsc', rdp, '/admin', host]).wait()
 
-        return
-
     def run(self):
         self.data = self.get_connect_data()
         self.set_cmdkeys()
         self.open_remote_desktop()
         self.del_cmdkeys()
 
-        return
-
 def main(target):
     rdos = RemoteWindowsManager(target)
     rdos.run()
-    
-    return
 
 if __name__ == '__main__':
     print 'Running rdos...\n'
