@@ -5,6 +5,7 @@ import json
 import os
 import subprocess as s
 import sys
+from time import sleep
 
 class RemoteWindowsManager:
 
@@ -50,6 +51,7 @@ class RemoteWindowsManager:
         self.data = self.get_connect_data()
         self.set_cmdkeys()
         self.open_remote_desktop()
+        sleep(5)
         self.del_cmdkeys()
 
 def main(target):
