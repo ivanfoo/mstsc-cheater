@@ -1,0 +1,5 @@
+{
+    "port": 3389,
+    "def_rpd": "base.rpd",
+    "datadir": "/data/"
+} 
