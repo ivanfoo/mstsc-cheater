@@ -14,13 +14,10 @@ class RemoteWindowsManager:
     def __init__(self, args):
         self.args = args
         self.datadir = os.path.dirname(__file__) + '/data/'
-        #self.data = []
-        #self.defport = '3389'
-        #self.defrpd = 'base.rdp'
         self.action = ''
         self.target = ''
 
-        self.existing_actions = ['add', 'edit', 'clear', 'open', 'rm']
+        self.existing_actions = { "add": "add_cmd", "edit": "edit_cmd", "clear": "clear_cmd", "open": "open_cmd", "rm": "rm_cmd"}
 
     def get_target_data(self):
         filename = self.datadir +  self.target + '.json'
@@ -28,10 +25,6 @@ class RemoteWindowsManager:
 
     def set_target_data(self, items):
         filename = self.datadir +  self.target + '.json'
-        print self.action
-        print self.target
-        #print self.existing_actions[self.action]
-        exit()
         Helper.save_json(items, filename)
 
     def set_env(self):
@@ -43,7 +36,7 @@ class RemoteWindowsManager:
         self.action = self.args[0]
         self.target = self.args[1]
 
-    def add(self):
+    def add_cmd (self):
         items = {}
         items['host'] = raw_input("host: ")
         items['username'] = raw_input("username: ")
@@ -51,16 +44,14 @@ class RemoteWindowsManager:
         
         self.set_target_data(items)
 
-
-    def open(self):
+    def open_cmd(self):
         self.data = self.get_target_data()
         #self.set_cmdkeys()
         #self.connect()
         #self.clear()
 
-
-    def action_clear(self):
-        self.del_ALL_cmdkeys()       
+    def rm_cmd(self):
+        pass     
 
     def set_cmdkeys(self):
         host = "/generic:TERMSRV/" + self.data['host']
@@ -82,8 +73,8 @@ class RemoteWindowsManager:
 
     def run(self):
         self.set_env()
-        self.add()
-
+        getattr(RemoteWindowsManager, self.existing_actions[self.action])(self)
+        
 def main(target):
     rdos = RemoteWindowsManager(target)
     rdos.run()
