@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import json
+import subprocess as s
 
 class RdosHelper:
 

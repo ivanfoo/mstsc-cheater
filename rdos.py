@@ -1,29 +1,47 @@
 #! /usr/bin/env python
 
 import base64
-import json
 import os
-import subprocess as s
 import sys
-import time
 import getpass
 from rdos_helper import RdosHelper as Helper
 
 class RemoteWindowsManager:
 
     def __init__(self, args):
-        self.data = {}
-        self.args = args
         self.datadir = os.path.dirname(__file__) + "/data/"
-        self.cmd = ""
+        self.action = ""
         self.target = ""
-        self.cmd_list = {
-            "add": "add_cmd",
-            "edit": "edit_cmd",
-            "clear": "clear_cmd",
-            "open": "open_cmd",
-            "rm": "rm_cmd"
+        self.action_list = {
+            "add": "action_add",
+            "edit": "action_edit",
+            "clear": "action_clear",
+            "open": "action_open",
+            "rm": "action_rm"
         }
+        self.set_env(args)
+
+    def action_add(self):
+        data = {}
+        data["host"] = raw_input("host: ")
+        data["username"] = raw_input("username: ")
+        data["passw"] = getpass.getpass()
+        data["passw"] = base64.b64encode(data["passw"])
+        
+        self.set_target_data(data)
+
+    def action_clear(self):
+        host = self.get_target_data()["host"]
+        Helper.del_cmdkeys(host)
+
+    def action_open(self):
+        data = self.get_target_data()
+        data["passw"] = base64.b64decode(data["passw"])
+        Helper.set_cmdkeys(data["host"], data["user"], data["passw"])
+        Helper.connect()
+
+    def action_rm(self):
+        pass   
 
     def get_target_data(self):
         filename = self.datadir +  self.target + ".json"
@@ -33,34 +51,17 @@ class RemoteWindowsManager:
         filename = self.datadir +  self.target + ".json"
         Helper.dump_json(items, filename)
 
-    def set_env(self):
-        if self.args[0] not in self.cmd_list:
-            target = self.args[0]
-            self.args[0] = "open"
-            self.args.append(target)
+    def set_env(self, args):
+        if args[0] not in self.action_list:
+            target = args[0]
+            args[0] = "open"
+            args.append(target)
 
-        self.cmd = self.args[0]
-        self.target = self.args[1]
-
-    def add_cmd (self):
-        target_data = {}
-        target_data["host"] = raw_input("host: ")
-        target_data["username"] = raw_input("username: ")
-        target_data["password"] = getpass.getpass()
-        
-        self.set_target_data(target_data)
-
-    def open_cmd(self):
-        self.data = self.get_target_data()
-        Helper.set_cmdkeys()
-        Helper.connect()
-
-    def rm_cmd(self):
-        pass     
+        self.action = args[0]
+        self.target = args[1]  
 
     def run(self):
-        self.set_env()
-        getattr(RemoteWindowsManager, self.cmd_list[self.cmd])(self)
+        getattr(RemoteWindowsManager, self.action_list[self.action])(self)
         
 def main(args):
     rdos = RemoteWindowsManager(args)
@@ -68,5 +69,4 @@ def main(args):
 
 if __name__ == "__main__":
     print "\n### Running rdos... ###\n"
-    args = sys.argv[1:]
-    main(args)
+    main(sys.argv[1:])
