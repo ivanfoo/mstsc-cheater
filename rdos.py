@@ -12,16 +12,9 @@ class RemoteWindowsManager:
         self.datadir = os.path.dirname(__file__) + "/data/"
         self.action = ""
         self.target = ""
-        self.action_list = {
-            "add": "action_add",
-            "edit": "action_edit",
-            "clear": "action_clear",
-            "open": "action_open",
-            "rm": "action_rm"
-        }
         self.set_env(args)
 
-    def action_add(self):
+    def add(self):
         data = {}
         data["host"] = raw_input("host: ")
         data["username"] = raw_input("username: ")
@@ -30,17 +23,17 @@ class RemoteWindowsManager:
         
         self.set_target_data(data)
 
-    def action_clear(self):
+    def clear(self):
         host = self.get_target_data()["host"]
         Helper.del_cmdkeys(host)
 
-    def action_open(self):
+    def open(self):
         data = self.get_target_data()
         data["passw"] = base64.b64decode(data["passw"])
         Helper.set_cmdkeys(data["host"], data["user"], data["passw"])
         Helper.connect()
 
-    def action_rm(self):
+    def rm(self):
         pass   
 
     def get_target_data(self):
@@ -52,16 +45,14 @@ class RemoteWindowsManager:
         Helper.dump_json(items, filename)
 
     def set_env(self, args):
-        if args[0] not in self.action_list:
-            target = args[0]
-            args[0] = "open"
-            args.append(target)
-
         self.action = args[0]
         self.target = args[1]  
 
     def run(self):
-        getattr(RemoteWindowsManager, self.action_list[self.action])(self)
+        try:
+            getattr(RemoteWindowsManager, self.action)(self)
+        except AttributeError:
+            print 'There is no such action'
         
 def main(args):
     rdos = RemoteWindowsManager(args)
