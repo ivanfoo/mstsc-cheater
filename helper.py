@@ -13,7 +13,7 @@ class Helper:
     @staticmethod
     def dump_json(items, filename):
         with open(filename, 'w') as f:
-            json.dump(items, f, indent = 4)
+            json.dump(items, f, indent = 4, sort_keys = True)
             f.write('\n')
 
     @staticmethod
