@@ -24,14 +24,18 @@ class Helper:
         s.Popen(["cmdkey", host, user, passw], stdout = s.PIPE).wait()
 
     @staticmethod
-    def del_cmdkeys(self, host):
+    def del_cmdkeys(host):
         host = "/delete:TERMSRV/" + host
         s.Popen(["cmdkey", host], stdout = s.PIPE).wait()
 
     @staticmethod
-    def connect(self, data):
-        host = "/v:" + data["host"] + ":" + data["port"]
-        s.Popen(["mstsc", data["rdp"], "/admin", host]).wait()
+    def connect(data):
+        host = "/v:" + data["host"] + ":" + str(data["port"])
+
+        if data["rdp"] == "":
+            s.Popen(["mstsc", "/admin", host]).wait()
+        else:
+            s.Popen(["mstsc", data["rdp"], "/admin", host]).wait()
 
 
 
