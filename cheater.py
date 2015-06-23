@@ -41,7 +41,8 @@ class Cheater:
             "rdp": raw_input("rdp file: ")
         }
 
-        self._dump_target_data(data)        
+        self._dump_target_data(data)
+        Helper.set_cmdkeys(data["host"], data["user"], base64.b64decode(data["passw"])) 
 
     def _clear(self):
         host = self._load_target_data()["host"]
