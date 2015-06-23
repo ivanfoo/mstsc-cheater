@@ -15,38 +15,45 @@ class Cheater:
             "target_dir": os.path.dirname(__file__) + "/target/",
             "rdp_dir": os.path.dirname(__file__) + "/rdp/"
         }
+
         self.action = ""
         self.target = ""
 
     def _add(self):
         data = {
             "host": raw_input("host: "),
-            "username": raw_input("username: "),
+            "user": raw_input("user: "),
             "passw": base64.b64encode(getpass.getpass())
         }
+
         data["port"] = self.config["port"]
         data["rdp"] = self.config["rdp"]
+
         self._dump_target_data(data)
+        Helper.set_cmdkeys(data["host"], data["user"], base64.b64decode(data["passw"]))
 
     def _add_custom(self):
         data = {
             "host": raw_input("host: "),
-            "username": raw_input("username: "),
+            "user": raw_input("user: "),
             "passw": base64.b64encode(getpass.getpass()),
             "port": raw_input("port: "),
             "rdp": raw_input("rdp file: ")
         }
+
         self._dump_target_data(data)        
 
     def _clear(self):
-        host = self._get_target_data()["host"]
+        host = self._load_target_data()["host"]
         Helper.del_cmdkeys(host)
 
     def _open(self):
         data = self._load_target_data()
         data["passw"] = base64.b64decode(data["passw"])
-        data["rdp"] = self.config["rdp_dir"] + data["rdp"]
-        Helper.set_cmdkeys(data["host"], data["user"], data["passw"])
+
+        if data["rdp"] != "":
+            data["rdp"] = self.config["rdp_dir"] + data["rdp"]
+
         Helper.connect(data)
 
     def _rm(self):
@@ -72,6 +79,8 @@ class Cheater:
         try:
             self._define_env(args)
             getattr(Cheater, self.action)(self)
+        except AttributeError:
+            print "There is no such action"
         except:
             print "Usage: cheater [action] target"
 
