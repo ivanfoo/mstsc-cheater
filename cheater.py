@@ -57,7 +57,10 @@ class Cheater:
         Helper.connect(data)
 
     def _rm(self):
-        pass
+        host = self._load_target_data()["host"]
+        Helper.del_cmdkeys(host)
+        filename = self.config["target_dir"] +  self.target + ".json"
+        os.remove(filename)
 
     def _load_target_data(self):
         filename = self.config["target_dir"] +  self.target + ".json"
