@@ -12,8 +12,8 @@ class Cheater:
         self.config = {
             "port": 3389,
             "rdp": "",
-            "target_dir": os.path.dirname(__file__) + "/targets/",
-            "rdp_dir": os.path.dirname(__file__) + "/rdps/"
+            "target_dir": os.path.dirname(__file__) + "/resources/targets/",
+            "rdp_dir": os.path.dirname(__file__) + "/resources/rdps/"
         }
 
         self.action = ""
@@ -85,8 +85,6 @@ class Cheater:
             getattr(Cheater, self.action)(self)
         except AttributeError:
             print "There is no such action"
-        except:
-            print "Usage: cheater [action] target"
 
 def main(args):
     cheater = Cheater()

@@ -1,6 +1,3 @@
 # Ignoring compiled files
 *.pyc
 
-# Ignoring user defined files
-resources/targets/*.json
-resources/rdps/*.rdp
