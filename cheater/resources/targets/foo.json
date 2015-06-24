@@ -1,0 +1,7 @@
+{
+    "user": "username", 
+    "host": "hostname", 
+    "passw": "base64pass", 
+    "port": 3389, 
+    "rdp": "file.rdp"
+}
