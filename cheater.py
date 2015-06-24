@@ -12,8 +12,8 @@ class Cheater:
         self.config = {
             "port": 3389,
             "rdp": "",
-            "target_dir": os.path.dirname(__file__) + "/target/",
-            "rdp_dir": os.path.dirname(__file__) + "/rdp/"
+            "target_dir": os.path.dirname(__file__) + "/targets/",
+            "rdp_dir": os.path.dirname(__file__) + "/rdps/"
         }
 
         self.action = ""
