@@ -5,6 +5,8 @@ import os
 import sys
 import getpass
 from helper import Helper
+import importlib
+# import commands.open as _open
 
 class Cheater:
 
@@ -79,18 +81,32 @@ class Cheater:
         self.action = "_" + args[0]
         self.target = args[1]  
 
-    def run(self, args):
+    def run_old(self, args):
         try:
-            self._define_env(args)
             getattr(Cheater, self.action)(self)
         except AttributeError:
             print "There is no such action"
 
-def main(args):
-    cheater = Cheater()
-    cheater.run(args)
+    def run(self):
+        module_name = "commands" + "." + self.action
+        print module_name
+        exit()
+        module = importlib.import_module(module_name)
+        command = getattr(module, self.action.capitalize())(self.target)
+        command.run()
+        #Open = commands.open.Open(self.target)
+        #Open.run()
 
-if __name__ == "__main__":
-    print "\n### Running cheater... ###\n"
-    main(sys.argv[1:])
+def main(args = None):
+    if args is None:
+        args = sys.argv[1:]
+
+    if len(args) == 1:
+        args.append(args[0])
+        args[0] = "open"
+
+    cheater = Cheater()
+    cheater.action = args[0]
+    cheater.target = args[1]
+    cheater.run()
 
